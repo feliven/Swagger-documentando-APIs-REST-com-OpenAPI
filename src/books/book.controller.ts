@@ -41,7 +41,7 @@ class BookController {
         res.status(404).send({ message: "Book not found" });
         return;
       }
-      res.status(200).send(updatedBook);
+      res.status(200).send({ message: "Book updated", updatedBook });
     } catch (error: any) {
       res.status(400).send({ message: error.message });
     }
@@ -54,7 +54,7 @@ class BookController {
         res.status(404).send({ message: "Book not found" });
         return;
       }
-      res.status(204).send();
+      res.status(204).send({ message: "Book removed", deletedBook });
     } catch (error: any) {
       res.status(500).send({ message: "Internal Server Error", error });
     }
