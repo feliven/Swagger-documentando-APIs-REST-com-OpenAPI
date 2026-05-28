@@ -16,14 +16,14 @@
         "responses": {
           "201": {
             "description": "Book created",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Book"
-              },
-              "example": {
-                "title": "The Great Gatsby",
-                "author": "F. Scott Fitzgerald",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                },
+                "example": {
+                  "title": "The Great Gatsby",
+                  "author": "F. Scott Fitzgerald",
                   "ISBN": "9780744066868",
                   "_id": "6a18c271e2dac6c70e173c32",
                   "__v": 0
@@ -32,7 +32,12 @@
             }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorMsg" }
+              }
+            }
           }
         }
       },
@@ -58,23 +63,44 @@
               }
             }
           },
+          "401": {
+            "description": "Error: Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorMsg" }
+              }
+            }
+          },
+          "403": {
+            "description": "Error: Forbidden",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorMsg" }
+              }
+            }
+          },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorMsg" }
+              }
+            }
           }
         }
       }
     },
     "/books/{title}": {
-        "parameters": [
-          {
-            "name": "title",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+      "parameters": [
+        {
+          "name": "title",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
           }
-        ],
+        }
+      ],
       "get": {
         "summary": "Find a book by title",
         "tags": ["Books"],
@@ -90,25 +116,35 @@
             }
           },
           "404": {
-            "description": "Book not found"
+            "description": "Book not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorMsg" }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorMsg" }
+              }
+            }
           }
         }
       }
     },
     "/books/{id}": {
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
           }
-        ],
+        }
+      ],
       "put": {
         "summary": "Update a book",
         "tags": ["Books"],
@@ -131,10 +167,20 @@
             }
           },
           "404": {
-            "description": "Book not found"
+            "description": "Book not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorMsg" }
+              }
+            }
           },
           "400": {
-            "description": "Bad Request"
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorMsg" }
+              }
+            }
           }
         }
       },
@@ -157,10 +203,20 @@
             }
           },
           "404": {
-            "description": "Book not found"
+            "description": "Book not found",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorMsg" }
+              }
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorMsg" }
+              }
+            }
           }
         }
       }
