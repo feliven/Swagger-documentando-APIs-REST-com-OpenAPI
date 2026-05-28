@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { BookService } from "./book.service";
 
 class BookController {
-  async create(req: Request, res: Response): Promise<void> {
+  async create(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const book = await new BookService().create(req.body);
       res.status(201).send(book);
@@ -11,7 +11,7 @@ class BookController {
     }
   }
 
-  async find(req: Request, res: Response): Promise<void> {
+  async find(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const books = await new BookService().find();
       res.status(200).send(books);
@@ -20,11 +20,12 @@ class BookController {
     }
   }
 
-  async findByTitle(req: Request, res: Response): Promise<void> {
+  async findByTitle(req: Request<{ title: string }>, res: Response, next: NextFunction): Promise<void> {
     try {
       const book = await new BookService().findByTitle(req.params.title);
       if (!book || book.length === 0) {
         res.status(404).send({ message: "Book not found" });
+        return;
       }
 
       res.status(200).send(book);
@@ -33,14 +34,12 @@ class BookController {
     }
   }
 
-  async update(req: Request, res: Response): Promise<void> {
+  async update(req: Request<{ id: string }>, res: Response, next: NextFunction): Promise<void> {
     try {
-      const updatedBook = await new BookService().update(
-        req.params.id,
-        req.body,
-      );
+      const updatedBook = await new BookService().update(req.params.id, req.body);
       if (!updatedBook) {
         res.status(404).send({ message: "Book not found" });
+        return;
       }
       res.status(200).send(updatedBook);
     } catch (error: any) {
@@ -48,11 +47,12 @@ class BookController {
     }
   }
 
-  async delete(req: Request, res: Response): Promise<void> {
+  async delete(req: Request<{ id: string }>, res: Response, next: NextFunction): Promise<void> {
     try {
       const deletedBook = await new BookService().delete(req.params.id);
       if (!deletedBook) {
         res.status(404).send({ message: "Book not found" });
+        return;
       }
       res.status(204).send();
     } catch (error: any) {
