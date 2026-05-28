@@ -11,6 +11,11 @@
         "summary": "Create a book",
         "tags": ["Books"],
         "requestBody": {
+          "$ref": "#/components/requestBodies/BookDtoRequest"
+        },
+        "responses": {
+          "201": {
+            "description": "Book created",
           "content": {
             "application/json": {
               "schema": {
@@ -19,14 +24,12 @@
               "example": {
                 "title": "The Great Gatsby",
                 "author": "F. Scott Fitzgerald",
-                "ISBN": "9780744066868"
+                  "ISBN": "9780744066868",
+                  "_id": "6a18c271e2dac6c70e173c32",
+                  "__v": 0
+                }
               }
             }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Book created"
           },
           "400": {
             "description": "Bad Request"
@@ -62,9 +65,6 @@
       }
     },
     "/books/{title}": {
-      "get": {
-        "summary": "Find a book by title",
-        "tags": ["Books"],
         "parameters": [
           {
             "name": "title",
@@ -75,6 +75,9 @@
             }
           }
         ],
+      "get": {
+        "summary": "Find a book by title",
+        "tags": ["Books"],
         "responses": {
           "200": {
             "description": "Book found",
@@ -96,9 +99,6 @@
       }
     },
     "/books/{id}": {
-      "put": {
-        "summary": "Update a book",
-        "tags": ["Books"],
         "parameters": [
           {
             "name": "id",
@@ -109,14 +109,11 @@
             }
           }
         ],
+      "put": {
+        "summary": "Update a book",
+        "tags": ["Books"],
         "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Book"
-              }
-            }
-          }
+          "$ref": "#/components/requestBodies/BookDtoRequest"
         },
         "responses": {
           "200": {
@@ -124,7 +121,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Book"
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "updatedBook": { "$ref": "#/components/schemas/Book" }
+                  }
                 }
               }
             }
@@ -140,19 +141,20 @@
       "delete": {
         "summary": "Delete a book",
         "tags": ["Books"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "204": {
-            "description": "Book deleted"
+            "description": "Book deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "deletedBook": { "$ref": "#/components/schemas/Book" }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "description": "Book not found"
@@ -166,7 +168,7 @@
   },
   "components": {
     "schemas": {
-      "Book": {
+      "BookDto": {
         "type": "object",
         "properties": {
           "title": {
@@ -179,8 +181,53 @@
             "type": "string"
           }
         }
+      },
+      "Book": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "ISBN": {
+            "type": "string"
+          },
+          "_id": {
+            "type": "string"
+          },
+          "__v": {
+            "type": "integer"
+          }
+        }
+      },
+      "ErrorMsg": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
       }
     },
+    "requestBodies": {
+      "BookDtoRequest": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/BookDto"
+            },
+            "example": {
+              "title": "The Great Gatsby",
+              "author": "F. Scott Fitzgerald",
+              "ISBN": "9780744066868"
+            }
+          }
+        }
+      }
+    },
+
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
