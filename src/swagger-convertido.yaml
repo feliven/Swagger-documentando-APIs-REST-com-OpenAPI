@@ -1,0 +1,275 @@
+---
+openapi: 3.0.0
+info:
+  title: Book API
+  description: API for managing books
+  version: 1.0.0
+paths:
+  "/books":
+    post:
+      summary: Create a book
+      tags:
+        - Books
+      requestBody:
+        "$ref": "#/components/requestBodies/BookDtoRequest"
+      responses:
+        "201":
+          description: Book created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Book"
+              example:
+                title: The Great Gatsby
+                author: F. Scott Fitzgerald
+                ISBN: "9780744066868"
+                _id: 6a18c271e2dac6c70e173c32
+                __v: 0
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorMsg"
+    get:
+      summary: Get all books
+      tags:
+        - Books
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Book"
+        "401":
+          description: "Error: Unauthorized"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorMsg"
+        "403":
+          description: "Error: Forbidden"
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorMsg"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorMsg"
+  "/books/{title}":
+    parameters:
+      - name: title
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Find a book by title
+      tags:
+        - Books
+      responses:
+        "200":
+          description: Book found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Book"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorMsg"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorMsg"
+  "/books/{id}":
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    put:
+      summary: Update a book
+      tags:
+        - Books
+      requestBody:
+        "$ref": "#/components/requestBodies/BookDtoRequest"
+      responses:
+        "200":
+          description: Book updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  updatedBook:
+                    "$ref": "#/components/schemas/Book"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorMsg"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorMsg"
+    delete:
+      summary: Delete a book
+      tags:
+        - Books
+      responses:
+        "204":
+          description: Book deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  deletedBook:
+                    "$ref": "#/components/schemas/Book"
+        "404":
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorMsg"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ErrorMsg"
+  "/auth/register":
+    post:
+      summary: Create a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "201":
+          description: Usuário cadastrado com sucesso
+          content:
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: Internal Server Error
+          content:
+            text/html:
+              schema:
+                type: string
+      tags:
+        - Auth
+  "/auth/login":
+    post:
+      summary: Log in user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Usuário logado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        "401":
+          description: "Error: Unauthorized"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal Server Error
+          content:
+            text/html:
+              schema:
+                type: string
+      tags:
+        - Auth
+components:
+  schemas:
+    BookDto:
+      type: object
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+        ISBN:
+          type: string
+    Book:
+      type: object
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+        ISBN:
+          type: string
+        _id:
+          type: string
+        __v:
+          type: integer
+    ErrorMsg:
+      type: object
+      properties:
+        message:
+          type: string
+  requestBodies:
+    BookDtoRequest:
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/BookDto"
+          example:
+            title: The Great Gatsby
+            author: F. Scott Fitzgerald
+            ISBN: "9780744066868"
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

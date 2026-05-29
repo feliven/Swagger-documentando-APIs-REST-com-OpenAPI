@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 import { routes } from "./routes";
 import authRouter from "./auth/auth.routes";
 import swaggerUi from "swagger-ui-express";
-import swaggerJson from "./swagger.json";
+// import swaggerJson from "./swagger.json";
+import swaggerSpec from "./swagger";
 
 class App {
   public express: express.Application;
@@ -17,11 +18,12 @@ class App {
 
   private middleware(): void {
     this.express.use(express.json());
-    this.express.use(
-      "/api-docs",
-      swaggerUi.serve,
-      swaggerUi.setup(swaggerJson),
-    );
+    this.express.use("/api-jsdoc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    // this.express.use(
+    //   "/api-docs",
+    //   swaggerUi.serve,
+    //   swaggerUi.setup(swaggerJson),
+    // );
   }
 
   private async database() {
